@@ -1,0 +1,114 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/bricolage-grotesque/wdth.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Danika brand palette (space-separated RGB channels for Tailwind alpha support) */
+    --c-white: 255 255 255;
+    --c-offwhite: 252 238 239;      /* #FCEEEF soft red/blush section background (`bg-paper`) */
+    --c-charcoal: 41 35 35;         /* #292323 text + image overlays only */
+    --c-charcoal-soft: 92 82 82;    /* secondary text, 7.6:1 on white */
+    --c-line: 232 201 204;          /* #E8C9CC subtle border */
+    --c-brand-50: 252 238 239;      /* #FCEEEF */
+    --c-brand-100: 247 221 223;
+    --c-brand-200: 232 201 204;     /* #E8C9CC */
+    --c-brand-500: 181 18 27;       /* #B5121B secondary red */
+    --c-brand-600: 163 10 18;
+    --c-brand-700: 146 0 9;         /* #920009 primary brand red */
+    --c-brand-800: 111 0 7;         /* #6F0007 deep burgundy */
+    --c-brand-900: 86 0 5;
+    --c-brand-950: 58 0 4;
+    /* Shared corner radius for every button, field, card, menu and widget (see tailwind.config.ts). */
+    --ui-radius: 10px;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-base leading-relaxed text-ink antialiased;
+    overflow-x: clip;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading font-bold text-ink;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    /* red ring on light surfaces, white ring on red/burgundy surfaces (`.on-red`) */
+    outline: 3px solid rgb(var(--c-brand-500));
+    outline-offset: 2px;
+  }
+  .on-red :focus-visible { outline-color: #fff; }
+  ::selection { background: rgb(var(--c-brand-700)); color: #fff; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8; }
+  /* One vertical rhythm for every band: ~56px phones, ~70px tablet, ~96px desktop (fluid, no jumps). */
+  .section, .pad-y { padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem); }
+  .eyebrow { @apply mb-4 inline-flex items-center gap-2.5 text-[0.8125rem] font-bold text-brand-700 sm:text-sm; }
+  .eyebrow::before { content: ''; @apply h-1 w-7 bg-brand-500; }
+  .display { font-family: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif; font-stretch: 78%; font-weight: 800; line-height: .95; letter-spacing: -0.012em; text-wrap: balance; }
+  /* Type scale: h1 48-88px, h2 36-64px, h3 28-48px, h4 20-24px (row and card titles). */
+  .h1 { @apply display text-[clamp(3rem,10.5vw,5.5rem)]; }
+  .h2 { @apply display text-brand-700 text-[clamp(2.25rem,6vw,4rem)]; }
+  .h3 { @apply display text-brand-700 text-[clamp(1.75rem,1.2rem+2.2vw,3rem)]; }
+  .h3-compact { @apply display text-brand-700 text-[clamp(1.75rem,1.3rem+1.4vw,2.5rem)]; }
+  .h4 { @apply font-heading text-xl font-bold leading-tight sm:text-2xl; }
+  .lead { @apply max-w-[38rem] text-[1.0625rem] text-ink-soft sm:text-lg; }
+  .blueprint {
+    background-image:
+      linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .card {
+    @apply rounded-card border border-line bg-white shadow-card;
+  }
+  .card-hover {
+    @apply transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lift hover:border-brand-500;
+  }
+}
+
+/* Section reveal: only hidden when JS has flagged the document, so content never disappears without JS. */
+.js .reveal:not(.is-visible) { opacity: 0; transform: translateY(18px); }
+.reveal { transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1); }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .reveal:not(.is-visible) { opacity: 1; transform: none; }
+}
+
+/* Align full-bleed bands with the 1240px container: same gutters as .container-x (1rem / 1.5rem / 2rem).
+   `html` prefix raises specificity so these beat Tailwind's responsive px-* utilities, which are emitted later. */
+html .edge-l { padding-left: 1rem; }
+html .edge-r { padding-right: 1rem; }
+@media (min-width: 640px) { html .edge-l { padding-left: 1.5rem; } html .edge-r { padding-right: 1.5rem; } }
+@media (min-width: 1024px) {
+  html .edge-l { padding-left: max(2rem, calc((100vw - 1240px) / 2 + 2rem)); }
+  html .edge-r { padding-right: max(2rem, calc((100vw - 1240px) / 2 + 2rem)); }
+}
+
+/* One orchestrated moment: hero entrance */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .55s cubic-bezier(.22,.61,.36,1) both; }
+
+/* Floating call bar / help widget step aside while the contact section is on screen, so they never cover form controls. */
+.float-cta { transition: opacity .2s ease, visibility .2s; }
+html[data-contact-visible] .float-cta { opacity: 0; visibility: hidden; pointer-events: none; }
